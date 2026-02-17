@@ -64,38 +64,20 @@ async def websocket_endpoint(websocket: WebSocket, poll_id: str):
     """
     WebSocket endpoint for real-time poll updates.
     
-    Clients connect to receive live vote updates for a specific poll.
-    
-    - **poll_id**: UUID of the poll to subscribe to
-    
-    Messages sent to clients:
-    ```json
-    {
-        "type": "vote_update",
-        "data": {
-            "poll_id": "...",
-            "question": "...",
-            "total_votes": 42,
-            "options": [
-                {"id": "...", "text": "...", "vote_count": 10},
-                ...
-            ]
-        }
-    }
-    ```
+    - **poll_id**: UUID of the poll, or 'all' to subscribe to all poll updates.
     """
     await manager.connect(websocket, poll_id)
     try:
         while True:
             # Keep connection alive and receive any client messages
-            data = await websocket.receive_text()
+            await websocket.receive_text()
             # Echo back for connection verification
-            await websocket.send_json({"type": "ping", "message": "connected"})
+            await websocket.send_json({"type": "ping", "message": "connected", "room": poll_id})
     except WebSocketDisconnect:
         manager.disconnect(websocket, poll_id)
-        logger.info(f"Client disconnected from poll {poll_id}")
+        logger.info(f"Client disconnected from room {poll_id}")
     except Exception as e:
-        logger.error(f"WebSocket error: {e}")
+        logger.error(f"WebSocket error in room {poll_id}: {e}")
         manager.disconnect(websocket, poll_id)
 
 

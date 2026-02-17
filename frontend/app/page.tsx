@@ -11,10 +11,27 @@ export default function Home() {
     const [error, setError] = useState('');
 
     useEffect(() => {
+        let ws: any;
         const loadPolls = async () => {
             try {
                 const data = await fetchPolls();
                 setPolls(data);
+
+                // Setup WebSocket for all updates
+                const { PollWebSocket } = await import('@/lib/websocket');
+                ws = new PollWebSocket('all', (update: any) => {
+                    setPolls(prevPolls => prevPolls.map(p => {
+                        if (p.id === update.poll_id) {
+                            return {
+                                ...p,
+                                total_votes: update.total_votes,
+                                // options count stays same, but we can update total_votes
+                            };
+                        }
+                        return p;
+                    }));
+                });
+                ws.connect();
             } catch (err) {
                 setError('Failed to load polls');
             } finally {
@@ -22,6 +39,10 @@ export default function Home() {
             }
         };
         loadPolls();
+
+        return () => {
+            if (ws) ws.disconnect();
+        };
     }, []);
 
     const totalVotes = polls.reduce((sum, p) => sum + p.total_votes, 0);
@@ -72,10 +93,10 @@ export default function Home() {
                 {!loading && polls.length > 0 && (
                     <div className={styles.pollGrid}>
                         {polls.map((poll) => {
-                            const participation = polls.length > 0 
+                            const participation = polls.length > 0
                                 ? Math.round((poll.total_votes / Math.max(...polls.map(p => p.total_votes || 1))) * 100)
                                 : 0;
-                            
+
                             return (
                                 <Link
                                     key={poll.id}

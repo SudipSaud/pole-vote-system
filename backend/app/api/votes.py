@@ -196,10 +196,14 @@ async def submit_vote(
     # Broadcast updated results via WebSocket
     results = VoteService.get_poll_results(db, poll_id)
     if results:
-        await manager.broadcast(str(poll_id), {
+        update_msg = {
             "type": "vote_update",
             "data": results
-        })
+        }
+        # Send to specific poll listeners
+        await manager.broadcast(str(poll_id), update_msg)
+        # Also send to home page / global listeners
+        await manager.broadcast("all", update_msg)
 
     logger.info(f"Vote submitted successfully - Poll: {poll_id}")
     return VoteResponse(
