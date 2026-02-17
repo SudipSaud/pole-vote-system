@@ -1,0 +1,37 @@
+# Backend .env
+DATABASE_URL=
+CORS_ORIGINS=
+ENVIRONMENT=
+
+# Frontend .env.local
+NEXT_PUBLIC_API_URL=
+NEXT_PUBLIC_WS_URL=
+
+# Python virtual environment
+backend/venv/
+backend/__pycache__/
+backend/app/__pycache__/
+backend/app/**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Node modules
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.env.local
+frontend/.env.production
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
