@@ -31,7 +31,7 @@ export interface PollListItem {
     total_votes: number;
 }
 
-export type VotingSecurityOption = 'none' | 'browser_session' | 'ip_address';
+export type VotingSecurityOption = 'none' | 'browser_session' | 'ip_address' | 'device_fingerprint';
 
 export interface CreatePollData {
     question: string;
