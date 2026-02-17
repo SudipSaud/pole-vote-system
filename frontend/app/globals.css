@@ -83,3 +83,9 @@ a {
   margin: 0 auto;
   padding: 0 var(--spacing-xl);
 }
+
+@media (max-width: 640px) {
+  .container, .containerWide {
+    padding: 0 var(--spacing-md);
+  }
+}

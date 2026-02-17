@@ -187,6 +187,7 @@
   flex-grow: 1;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -342,4 +343,39 @@
 .emptyState p {
   font-size: 1.125rem;
   margin-bottom: var(--spacing-lg);
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: var(--spacing-2xl) var(--spacing-md);
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .title {
+    font-size: 2.25rem;
+  }
+
+  .pollGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .pollCard {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.75rem;
+  }
+
+  .overviewGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .pollStatCircle {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
 }

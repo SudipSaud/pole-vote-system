@@ -144,8 +144,13 @@
 }
 
 @keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 .barStats {
@@ -186,18 +191,35 @@
   .barRow {
     grid-template-columns: 1fr;
     gap: 0.5rem;
+    padding: var(--spacing-sm) var(--spacing-md);
   }
 
   .barStats {
     font-size: 0.8125rem;
+    text-align: left;
   }
 
   .header {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
+    gap: var(--spacing-md);
   }
 
   .controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-md);
+  }
+
+  .viewToggle {
     width: 100%;
+  }
+
+  .toggleBtn,
+  .toggleActive {
+    flex: 1;
+    text-align: center;
+    padding: 0.6rem 0.5rem;
+    font-size: 0.8125rem;
   }
 }

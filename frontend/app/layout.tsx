@@ -47,6 +47,9 @@ export default function RootLayout({
                         <p>
                             Built with Next.js, FastAPI, and PostgreSQL • Real-time updates via WebSockets
                         </p>
+                        <p style={{ marginTop: '0.5rem', fontWeight: '600', color: 'var(--color-primary)' }}>
+                            Developed by Sudip Saud
+                        </p>
                     </div>
                 </footer>
             </body>

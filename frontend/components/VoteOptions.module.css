@@ -95,8 +95,16 @@
         opacity: 0;
         transform: translateY(-10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+@media (max-width: 480px) {
+    .optionButton {
+        padding: 0.875rem 1rem;
+        font-size: 0.9375rem;
     }
 }
