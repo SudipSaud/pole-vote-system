@@ -2,7 +2,16 @@
  * WebSocket client for real-time poll updates
  */
 
-const WS_URL = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8000';
+// Derive WebSocket URL from API URL if not explicitly provided
+const getWsUrl = () => {
+    if (process.env.NEXT_PUBLIC_WS_URL) return process.env.NEXT_PUBLIC_WS_URL;
+
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    // Replace http with ws and https with wss
+    return apiUrl.replace(/^http/, 'ws');
+};
+
+const WS_URL = getWsUrl();
 
 export interface PollUpdateData {
     poll_id: string;
