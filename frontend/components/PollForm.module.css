@@ -350,3 +350,28 @@
     cursor: not-allowed;
     transform: none;
 }
+
+@media (max-width: 640px) {
+    .form {
+        padding: var(--spacing-lg) var(--spacing-md);
+        border-radius: var(--radius-xl);
+    }
+
+    .title {
+        font-size: 1.5rem;
+    }
+
+    .securityGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .twoColGroup {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+
+    .optionWrapper {
+        padding: var(--spacing-sm);
+        gap: var(--spacing-sm);
+    }
+}
