@@ -26,10 +26,19 @@ app = FastAPI(
 )
 
 # CORS middleware
+# Split by comma and strip whitespace to prevent matching issues
+origins = [o.strip() for o in settings.cors_origins.split(",") if o.strip()]
+
+# Starlette/FastAPI does not allow allow_credentials=True when allow_origins=['*']
+# If '*' is in origins, we automatically disable credentials for security/compatibility
+allow_credentials = True
+if "*" in origins:
+    allow_credentials = False
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins.split(","),
-    allow_credentials=True,
+    allow_origins=origins,
+    allow_credentials=allow_credentials,
     allow_methods=["*"],
     allow_headers=["*"],
 )
