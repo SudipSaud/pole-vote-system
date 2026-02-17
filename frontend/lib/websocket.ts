@@ -4,11 +4,22 @@
 
 // Derive WebSocket URL from API URL if not explicitly provided
 const getWsUrl = () => {
-    if (process.env.NEXT_PUBLIC_WS_URL) return process.env.NEXT_PUBLIC_WS_URL;
+    let wsUrl = process.env.NEXT_PUBLIC_WS_URL;
+    if (wsUrl) return wsUrl.replace(/\/$/, ''); // Strip trailing slash
 
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-    // Replace http with ws and https with wss
-    return apiUrl.replace(/^http/, 'ws');
+
+    // 1. Strip trailing slash from API URL
+    const cleanApiUrl = apiUrl.replace(/\/$/, '');
+
+    // 2. Map protocols: http -> ws, https -> wss
+    if (cleanApiUrl.startsWith('https://')) {
+        return cleanApiUrl.replace('https://', 'wss://');
+    } else if (cleanApiUrl.startsWith('http://')) {
+        return cleanApiUrl.replace('http://', 'ws://');
+    }
+
+    return cleanApiUrl; // Fallback
 };
 
 const WS_URL = getWsUrl();
