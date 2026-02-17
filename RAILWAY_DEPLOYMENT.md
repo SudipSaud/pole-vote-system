@@ -55,6 +55,20 @@ This tells Railway where to find each app's code. The steps below explain exactl
 
 ---
 
+## 🚨 CRITICAL: Set Root Directory FIRST
+
+**⚠️ If you don't set Root Directory, Railpack will fail with "could not determine how to build the app"**
+
+For EACH service you create (Backend and Frontend):
+1. Go to service **Settings** tab
+2. Find **"Root Directory"** field
+3. Set it to either `backend` or `frontend` (depending on service)
+4. **SAVE** - this is required before deployment
+
+If you see "Error creating build plan with Railpack", you forgot this step. Go fix it!
+
+---
+
 ## 🗄️ Step 3: Add PostgreSQL Database
 
 1. In your Railway project dashboard, click **"+ New"** button
@@ -70,23 +84,23 @@ Railway automatically:
 
 ## 🔐 Step 4: Configure Backend Service
 
-### A. Verify/Add Backend Service
+### A. Create Backend Service
 
-If Railway didn't automatically detect backend:
-1. Click **"+ New"** button
+1. Click **"+ New"** button in your project
 2. Select **"GitHub"** 
-3. Select your repo again
-4. This adds another service instance for backend
+3. Select your **"pole-vote-system"** repo again
+4. Wait for the service to be created
 
-### B. Set Root Directory (IMPORTANT!)
+### ⚠️ B. SET ROOT DIRECTORY IMMEDIATELY (REQUIRED FIRST!)
 
-1. Click on the **"Backend"** service (or the Python/backend service)
+**Do this before anything else or deployment will fail!**
+
+1. Click on the **"Backend"** service 
 2. Go to **"Settings"** tab
 3. Find **"Root Directory"** field
-4. Set it to: `backend`
-5. Click **"Save"**
-
-This tells Railway to build from the backend folder, not the root.
+4. Clear any existing value and type: `backend`
+5. Press Enter and **SAVE**
+6. Wait for settings to update
 
 ### C. Set Environment Variables
 
@@ -100,20 +114,24 @@ ENVIRONMENT=production
 
 3. Railway automatically provides `DATABASE_URL` from PostgreSQL
 
-### D. Set Build & Start Commands
+### ⚠️ D. Set Build & Start Commands (REQUIRED!)
+
+**CRITICAL:** Both of these MUST be set or deployment will fail with "No start command was found"
 
 1. Go back to **"Settings"** tab
-2. Find **"Build Command"** and set it to:
+2. Find **"Build Command"** field and set it to:
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Find **"Start Command"** and set it to:
+3. Find **"Start Command"** field and set it to:
 ```bash
 python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT
 ```
+**Important:** Make sure this field is NOT empty. You must paste the exact command above.
 
-4. Click **"Deploy"** at bottom
+4. Click **"Save"** to apply settings
+5. Go to **"Deployments"** tab and click **"Deploy"** 
 
 Your backend will deploy and get a public URL like: `https://your-backend-random-id.railway.app`
 
@@ -128,13 +146,16 @@ Your backend will deploy and get a public URL like: `https://your-backend-random
 3. Select your repo again
 4. This adds a frontend service
 
-### B. Set Root Directory (IMPORTANT!)
+### ⚠️ B. SET ROOT DIRECTORY IMMEDIATELY (REQUIRED FIRST!)
+
+**Do this before anything else or deployment will fail!**
 
 1. Click the **"Frontend"** service
 2. Go to **"Settings"** tab
 3. Find **"Root Directory"** field
-4. Set it to: `frontend`
-5. Click **"Save"**
+4. Clear any existing value and type: `frontend`
+5. Press Enter and **SAVE**
+6. Wait for settings to update
 
 ### C. Set Environment Variables
 
@@ -262,23 +283,83 @@ Railway will automatically redeploy the frontend.
 
 ---
 
+## ✅ Pre-Deployment Checklist
+
+Before clicking "Deploy", verify these are set for EACH service:
+
+**Backend Service:**
+- [ ] Root Directory = `backend` ⚠️ **REQUIRED**
+- [ ] Build Command = `pip install -r requirements.txt` ⚠️ **REQUIRED**
+- [ ] Start Command = `python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT` 🔴 **CRITICAL - Must NOT be empty**
+- [ ] Variables include: `CORS_ORIGINS`, `ENVIRONMENT`
+- [ ] PostgreSQL is added to project
+
+**Frontend Service:**
+- [ ] Root Directory = `frontend` ⚠️ **REQUIRED**
+- [ ] Build Command = `npm install && npm run build`
+- [ ] Start Command = `npm start`
+- [ ] Variables include: `NEXT_PUBLIC_API_URL` (with backend URL)
+
+**PostgreSQL:**
+- [ ] Added to project
+- [ ] Initialized (shows as "Running")
+
+---
+
 ## 🚨 Common Issues & Solutions
 
-### Issue: "Railpack could not determine how to build the app" Error
-**Solution:** This happens because Railway sees a monorepo. Fix it:
+### 🔴 Issue: "Railpack could not determine how to build the app" Error
+
+**Status:** Build fails with "Error creating build plan with Railpack"
+
+**Root Cause:** Root Directory is not set for the service
+
+**Solution - FIX THIS IMMEDIATELY:**
+1. Go to the **failing service** (Backend or Frontend)
+2. Click **"Settings"** tab
+3. Find **"Root Directory"** field
+4. If it's empty or wrong, set it to `backend` or `frontend`
+5. Click **"Save"**
+6. Go to **"Deployments"** tab
+7. Click **"Redeploy"** button to retry
+8. Check logs - it should work now
+
+**Prevention:** Always set Root Directory BEFORE any build commands or variables.
+
+### Issue: "Railpack could not determine how to build the app" Error (Alternative)
+**Solution:** This can also happen because Railway sees a monorepo. Fix it:
 1. For each service (Backend and Frontend):
    - Go to **Settings** tab
-   - Set **Root Directory** to either `backend` or `frontend`
+   - Verify **Root Directory** is set correctly (`backend` or `frontend`)
    - Set the correct build/start commands (see Steps 4-5)
 2. Make sure each service has its own root directory configured
 3. Re-deploy each service
+
+### 🔴 Issue: "No start command was found" Error
+
+**Status:** Build fails with "To start your Python application, Railpack will automatically..."
+
+**Root Cause:** Start Command field is empty in Settings
+
+**Solution - FIX THIS IMMEDIATELY:**
+1. Go to Backend service → **Settings** tab
+2. Find **"Start Command"** field
+3. Paste this exactly:
+```bash
+python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT
+```
+4. Click **"Save"**
+5. Go to **"Deployments"** tab and click **"Redeploy"**
+6. Should work now
+
+**Note:** Even though Railpack can auto-detect FastAPI, you must explicitly set the Start Command to ensure it works correctly.
 
 ### Issue: Backend deployment fails
 **Solution:** Check logs in Railway dashboard. Common causes:
 - Missing `requirements.txt`
 - Root Directory not set to `backend`
+- **Start Command is empty** (see above)
 - Wrong Python version (need 3.10+)
-- Wrong start command
 
 ### Issue: Frontend shows "Failed to fetch"
 **Solution:** 
