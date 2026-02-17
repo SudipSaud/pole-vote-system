@@ -114,8 +114,8 @@ export default function ResultChart({ options, totalVotes }: ResultChartProps) {
                                     <Tooltip
                                         contentStyle={{ background: '#1f2937', border: '1px solid #374151', borderRadius: 8 }}
                                         labelStyle={{ color: '#9ca3af' }}
-                                        formatter={(value: number, _n: string, props: { payload: { percentage: number } }) =>
-                                            [`${value} votes (${props.payload.percentage}%)`]
+                                        formatter={(value: number, _n: string, item: any) =>
+                                            [`${value} votes (${item.payload?.percentage ?? 0}%)`]
                                         }
                                     />
                                 </PieChart>
@@ -130,8 +130,8 @@ export default function ResultChart({ options, totalVotes }: ResultChartProps) {
                                     <YAxis type="category" dataKey="name" width={100} stroke="#6b7280" tick={{ fill: '#9ca3af', fontSize: 12 }} />
                                     <Tooltip
                                         contentStyle={{ background: '#1f2937', border: '1px solid #374151', borderRadius: 8 }}
-                                        formatter={(value: number, _n: string, props: { payload: { percentage: number } }) =>
-                                            [`${value} votes (${props.payload.percentage}%)`]
+                                        formatter={(value: number, _n: string, item: any) =>
+                                            [`${value} votes (${item.payload?.percentage ?? 0}%)`]
                                         }
                                     />
                                     <Bar dataKey="value" name="Votes" radius={[0, 4, 4, 0]} animationDuration={500}>
