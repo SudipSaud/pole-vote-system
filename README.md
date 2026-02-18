@@ -159,3 +159,11 @@ psql -U postgres -d polldb -f "database\migrations\add_poll_expiration.sql"
 # Mac/Linux:
 psql -U postgres -d polldb -f database/migrations/add_poll_expiration.sql
 ```
+
+
+ Network Edge Case Handling
+ Same Network (Shared IP) Limitation
+
+When multiple devices are connected to the same network (WiFi/LAN), they often share a single public IP address due to NAT (Network Address Translation).
+
+Depending on the selected voting security mode, this can result in vote blocking.
